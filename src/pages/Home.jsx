@@ -2,17 +2,19 @@ import { css } from "@emotion/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Box, Title } from "../components/atoms";
+import Pagination from "../components/common/Pagination";
 import SearchBar from "../components/common/SearchBar";
 import PostItem from "../components/posts/PostItem";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
   const [query, setQuery] = useState();
 
   const fetchPosts = async () => {
     try {
       const params = {
-        page: "1",
+        page: page,
         per_page: "20",
         query,
       };
@@ -35,7 +37,7 @@ const Home = () => {
   // 追加
   useEffect(() => {
     fetchPosts();
-  }, [query]);
+  }, [query, page]);
 
   return (
     <Box col>
@@ -48,6 +50,12 @@ const Home = () => {
           {posts.map((post, index) => (
             <PostItem key={index} post={post} margin={32} />
           ))}
+          <Pagination
+            currentPage={page}
+            onNext={() => setPage(page + 1)}
+            onPrevious={() => setPage(page - 1)}
+            onPagePress={(page) => setPage(page)}
+          />
         </Box>
       </Box>
     </Box>
